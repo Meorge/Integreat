@@ -13,7 +13,17 @@ public class SingleIntegrator {
     
     /// The current sum of this integrator.
     public private(set) var sum: Double = 0.0
+    
+    /// The number of points that have been added to this integrator.
+    public private(set) var count: Int = 0
+    
+    /// The average value entered into this integrator.
+    public var mean: Double {
+        self.sum / Double(self.count)
+    }
 
+    public init() {}
+    
     /**
      Appends a `Point` with the given `x` and `y` values to this integrator,
      and returns the new sum.
@@ -25,7 +35,7 @@ public class SingleIntegrator {
      - Parameter y: The Y coordinate of the new point to append.
      - Returns: The integrator's sum after this point has been appended.
      */
-    func append(_ x: Double, _ y: Double) -> Double {
+    public func append(_ x: Double, _ y: Double) -> Double {
         return append(Point(x,y))
     }
     
@@ -35,7 +45,7 @@ public class SingleIntegrator {
      - Parameter point: The point to append.
      - Returns: The integrator's sum after this point has been appended.
      */
-    func append(_ point: Point) -> Double {
+    public func append(_ point: Point) -> Double {
         let xDelta = point.x - self.last.x
         
         let minY = min(self.last.y, point.y)
@@ -49,6 +59,8 @@ public class SingleIntegrator {
         
         self.sum += rectangle.area + triangle.area
         self.last = point
+        self.count += 1
+        
         return sum
     }
 }
