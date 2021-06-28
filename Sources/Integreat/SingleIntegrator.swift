@@ -8,6 +8,9 @@
  Integrates discrete `Double` values as they are generated, and provides the total sum so far.
  */
 public class SingleIntegrator {
+    /// The first `Point` sent to this integrator.
+    public private(set) var first: Point? = nil
+    
     /// The last `Point` sent to this integrator.
     public private(set) var last: Point = Point(0,0)
     
@@ -19,7 +22,9 @@ public class SingleIntegrator {
     
     /// The average value entered into this integrator.
     public var mean: Double {
-        self.sum / Double(self.count)
+        let denominator = self.last.x - (self.first?.x ?? 0.0)
+        if denominator == 0 { return 0.0 }
+        return self.sum / denominator
     }
 
     public init() {}
@@ -58,6 +63,8 @@ public class SingleIntegrator {
         let triangle = Triangle(width: xDelta, height: maxY - minY)
         
         self.sum += rectangle.area + triangle.area
+        
+        if self.first == nil { self.first = point }
         self.last = point
         self.count += 1
         
