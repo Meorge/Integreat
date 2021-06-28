@@ -1,64 +1,43 @@
     import XCTest
     @testable import Integreat
 
-    final class IntegreatTests: XCTestCase {
-        func testIntegrationLinear() {
-            func function(_ x: Double) -> Double {
-                return 0.4 * x + 2
-            }
+    final class IntegreatTests: XCTestCase {        
+        func testSingleIntegrator() {
+            let integrator = SingleIntegrator()
             
-            var data: [Point] = []
-            for x in 0...10 {
-                let x = Double(x)
-                let y = function(Double(x))
-                data.append(Point(x, y))
-            }
+            var output: Double
             
-            print(Integrator.integrate(data))
-        }
-        
-        func testIntegrationParabola() {
-            func function(_ x: Double) -> Double {
-                return -0.05 * x * x + 5
-            }
+            output = integrator.append(Point(1, 1)) // +0.5 = 0.5
+            XCTAssertEqual(output, 0.5)
             
-            var data: [Point] = []
-            for x in 0...8 {
-                let x = Double(x)
-                let y = function(Double(x))
-                data.append(Point(x, y))
-            }
+            output = integrator.append(Point(2, 1)) // +1 = 1.5
+            XCTAssertEqual(output, 1.5)
             
-            print(Integrator.integrate(data))
-        }
-        
-        func testIntegrationSine() {
-            func function(_ x: Double) -> Double {
-                return sin(x)
-            }
+            output = integrator.append(Point(3, 4)) // +2.5 = 4.0
+            XCTAssertEqual(output, 4.0)
             
-            var data: [Point] = []
-            for x in 0...8 {
-                let x = Double(x)
-                let y = function(Double(x))
-                data.append(Point(x, y))
-            }
+            output = integrator.append(Point(5, 10)) // +14 = 18
+            XCTAssertEqual(output, 18)
             
-            print(Integrator.integrate(data))
-        }
-        
-        func testSecondOrder3x() {
-            func function(_ x: Double) -> Double {
-                return 3 * x
-            }
+            output = integrator.append(Point(10, 2)) // +30 = 48
+            XCTAssertEqual(output, 48)
             
-            var data: [Point] = []
-            for x in 0...10 {
-                let x = Double(x)
-                let y = function(Double(x))
-                data.append(Point(x, y))
-            }
+            output = integrator.append(Point(12, 0)) // +2 = 50
+            XCTAssertEqual(output, 50)
             
-            print(Integrator.integrate(data, times: 2))
+            output = integrator.append(Point(14, -2)) // -2 = 48
+            XCTAssertEqual(output, 48)
+            
+            output = integrator.append(Point(18, -2)) // -8 = 40
+            XCTAssertEqual(output, 40)
+            
+            output = integrator.append(Point(22, 2)) // -2 + 2 = 40
+            XCTAssertEqual(output, 40)
+            
+            output = integrator.append(Point(30, -6)) // +2 - 18 = 24
+            XCTAssertEqual(output, 24)
+            
+            output = integrator.append(Point(34, 8)) // -5.1428 + 9.1428 = 28
+            XCTAssertEqual(output, 28)
         }
     }
