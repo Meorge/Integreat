@@ -9,7 +9,7 @@
  */
 public class SingleIntegrator {
     /// The first `Point` sent to this integrator.
-    public private(set) var first: Point? = nil
+    public private(set) var firstX: Double? = nil
     
     /// The last `Point` sent to this integrator.
     public private(set) var last: Point = Point(0,0)
@@ -22,7 +22,7 @@ public class SingleIntegrator {
     
     /// The average value entered into this integrator.
     public var mean: Double {
-        let denominator = self.last.x - (self.first?.x ?? 0.0)
+        let denominator = self.last.x - (self.firstX ?? 0.0)
         if denominator == 0 { return 0.0 }
         return self.sum / denominator
     }
@@ -51,7 +51,17 @@ public class SingleIntegrator {
      - Returns: The integrator's sum after this point has been appended.
      */
     public func append(_ point: Point) -> Double {
-        let xDelta = point.x - self.last.x
+        var point = point
+        
+        let xDelta: Double
+        if self.firstX == nil {
+            self.firstX = point.x
+            point.x = 0
+            xDelta = point.x
+        } else {
+            point.x -= self.firstX!
+            xDelta = point.x - self.last.x
+        }
         
         let minY = min(self.last.y, point.y)
         let maxY = max(self.last.y, point.y)
@@ -64,7 +74,6 @@ public class SingleIntegrator {
         
         self.sum += rectangle.area + triangle.area
         
-        if self.first == nil { self.first = point }
         self.last = point
         self.count += 1
         
